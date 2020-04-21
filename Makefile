@@ -1,4 +1,8 @@
 ifndef COMPILER
+$(warning Try one of these compiler options: )
+$(info make COMPILER=gcc)
+$(info make COMPILER=icc)
+$(info make COMPILER=ncc)
 $(error COMPILER is not set)
 endif
 
