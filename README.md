@@ -1,4 +1,4 @@
-# GNU, Intel and NEC compiler version of the Darknet: Neural Networks in C
+# GNU, Intel and NEC compiler versions of the Darknet: Neural Networks in C
 
 Darknet can be compiled with the GNU Compiler Collection as follows:
 ```
