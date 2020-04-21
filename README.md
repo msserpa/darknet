@@ -1,4 +1,24 @@
-# Yolo-v3 and Yolo-v2 for Windows and Linux
+# GCC, ICC and NCC version of the Darknet: Neural Networks in C
+
+Darknet can be compiled with the GNU Compiler Collection as follows:
+```
+make COMPILER=gcc
+```
+
+Darknet can be compiled with the Intel C++ Compiler as follows:
+
+```
+source /home/intel/bin/compilervars.sh intel64
+make COMPILER=icc
+```
+
+Darknet can be compiled with the NEC C Compiler as follows:
+
+```
+make COMPILER=ncc
+```
+
+## Forked from: Yolo-v3 and Yolo-v2 for Windows and Linux
 ### (neural network for object detection) - Tensor Cores can be used on [Linux](https://github.com/AlexeyAB/darknet#how-to-compile-on-linux) and [Windows](https://github.com/AlexeyAB/darknet#how-to-compile-on-windows-using-cmake-gui)
 
 More details: http://pjreddie.com/darknet/yolo/
