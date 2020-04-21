@@ -503,13 +503,31 @@ void transpose_bin(uint32_t *A, uint32_t *B, const int n, const int m,
     }
 }
 
+/* msserpa
+ * https://en.wikichip.org/wiki/population_count
+ */
+static inline int popcount(unsigned x){
+    int c = 0;
+    for (; x != 0; x >>= 1)
+        if (x & 1)
+            c++;
+    return c;
+}
+
+static inline int popcount32(uint32_t num){
+    return popcount(num & 0xFFFF) + popcount(num >> 16);
+}
+
 static inline int popcnt_32(uint32_t val32) {
-#ifdef WIN32  // Windows MSVS
-    int tmp_count = __popcnt(val32);
-#else   // Linux GCC
-    int tmp_count = __builtin_popcount(val32);
-#endif
-    return tmp_count;
+// #ifdef NEC
+    return popcount32(val32);
+// #endif
+// #ifdef WIN32  // Windows MSVS
+//     int tmp_count = __popcnt(val32);
+// #else   // Linux GCC
+//     int tmp_count = __builtin_popcount(val32);
+// #endif
+//     return tmp_count;
 }
 //----------------------------
 
@@ -542,7 +560,7 @@ static inline float _mm256_extract_float32(__m256 a, const int index) {
 
 #else    // Linux GCC/Clang
 #include <x86intrin.h>
-#include <ammintrin.h>
+//#include <ammintrin.h>
 #include <immintrin.h>
 #include <smmintrin.h>
 #include <cpuid.h>
@@ -2080,23 +2098,42 @@ void convolution_2d(int w, int h, int ksize, int n, int c, int pad, int stride,
     }
 }
 
+/* msserpa
+ * http://en.wikipedia.org/wiki/Hamming_weight#Efficient_implementation
+ */
+static inline uint64_t popcount64(uint64_t x){
+  uint64_t m1 = 0x5555555555555555ll;
+  uint64_t m2 = 0x3333333333333333ll;
+  uint64_t m4 = 0x0F0F0F0F0F0F0F0Fll;
+  uint64_t h01 = 0x0101010101010101ll;
+
+  x -= (x >> 1) & m1;
+  x = (x & m2) + ((x >> 2) & m2);
+  x = (x + (x >> 4)) & m4;
+
+  return (x * h01) >> 56;
+}
+
 static inline int popcnt_64(uint64_t val64) {
-#ifdef WIN32  // Windows
-#ifdef _WIN64 // Windows 64-bit
-    int tmp_count = __popcnt64(val64);
-#else         // Windows 32-bit
-    int tmp_count = __popcnt(val64);
-    tmp_count += __popcnt(val64 >> 32);
-#endif
-#else   // Linux
-#if defined(__x86_64__) || defined(__aarch64__)  // Linux 64-bit
-    int tmp_count = __builtin_popcountll(val64);
-#else  // Linux 32-bit
-    int tmp_count = __builtin_popcount(val64);
-    tmp_count += __builtin_popcount(val64 >> 32);
-#endif
-#endif
-    return tmp_count;
+// #ifdef NEC
+    return popcount64(val64);
+// #endif
+// #ifdef WIN32  // Windows
+// #ifdef _WIN64 // Windows 64-bit
+//     int tmp_count = __popcnt64(val64);
+// #else         // Windows 32-bit
+//     int tmp_count = __popcnt(val64);
+//     tmp_count += __popcnt(val64 >> 32);
+// #endif
+// #else   // Linux
+// #if defined(__x86_64__) || defined(__aarch64__)  // Linux 64-bit
+//     int tmp_count = __builtin_popcountll(val64);
+// #else  // Linux 32-bit
+//     int tmp_count = __builtin_popcount(val64);
+//     tmp_count += __builtin_popcount(val64 >> 32);
+// #endif
+// #endif
+//     return tmp_count;
 }
 
 void gemm_nn_custom_bin_mean_transposed(int M, int N, int K, float ALPHA_UNUSED,

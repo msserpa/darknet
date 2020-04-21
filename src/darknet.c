@@ -6,6 +6,10 @@
 #include <crtdbg.h>
 #endif
 
+#ifdef OPENMP
+#include <omp.h>
+#endif
+
 #include "parser.h"
 #include "utils.h"
 #include "dark_cuda.h"
@@ -454,6 +458,12 @@ int main(int argc, char **argv)
         printf("\n Currently Darknet doesn't support -nogpu flag. If you want to use CPU - please compile Darknet with GPU=0 in the Makefile, or compile darknet_no_gpu.sln on Windows.\n");
         exit(-1);
     }
+
+#ifdef OPENMP
+    #pragma omp parallel
+    #pragma omp single
+    printf("OMP_NUM_THREADS=%d\n", omp_get_num_threads());
+#endif
 
 #ifndef GPU
     gpu_index = -1;

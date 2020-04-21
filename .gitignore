@@ -1,3 +1,4 @@
+darknet.*cc
 *.o
 *.a
 *.dSYM
@@ -19,6 +20,7 @@ convnet/
 decaf/
 submission/
 cfg/
+obj/
 build/darknet/*
 build_*/
 !build/darknet/YoloWrapper.cs
